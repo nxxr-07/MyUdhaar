@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "80631407203",
+    "project_id": "myudhar-2764d",
+    "storage_bucket": "myudhar-2764d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:80631407203:android:d82cfbc6a0f433a2520e56",
+        "android_client_info": {
+          "package_name": "com.nxxr.myudhaar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "80631407203-37bc06nekqnqqm2g75obei5nvcb15ph0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAUVU-K_HJoIAeWa407UJyK9YsPANbv410"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "80631407203-37bc06nekqnqqm2g75obei5nvcb15ph0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
