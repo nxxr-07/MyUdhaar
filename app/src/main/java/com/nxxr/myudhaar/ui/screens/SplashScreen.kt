@@ -14,6 +14,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -31,16 +32,17 @@ fun SplashScreen(navController: NavController) {
         delay(300)
         visible = true
         delay(2000) // Stay on splash for 2 seconds
-        navController.navigate("login") {
+        navController.navigate("signIn") {
             popUpTo("splash") { inclusive = true }
         }
     }
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundColor),
-        contentAlignment = Alignment.Center
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -72,4 +74,12 @@ fun SplashScreen(navController: NavController) {
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun PreviewSplashScreen() {
+    SplashScreen(
+        navController = NavController(LocalContext.current)
+    )
 }

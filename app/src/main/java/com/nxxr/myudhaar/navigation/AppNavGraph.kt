@@ -7,13 +7,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.nxxr.myudhaar.data.repository.MainRepository
+import com.nxxr.myudhaar.ui.screens.AddPersonScreen
+import com.nxxr.myudhaar.ui.screens.auth.GoogleSignInScreen
 import com.nxxr.myudhaar.ui.screens.SplashScreen
-import com.nxxr.myudhaar.ui.screens.auth.*
-import com.nxxr.myudhaar.ui.screens.home.HomeScreen
+import com.nxxr.myudhaar.ui.screens.HomeScreen
+import com.nxxr.myudhaar.viewmodel.HomeViewModel
+
 
 sealed class Screen(val route: String) {
     object Splash : Screen("splash")
-    object Login : Screen("login")
+    object SignIn : Screen("signIn")
     object Home : Screen("home")
     object Person : Screen("person")
     object Summary : Screen("summary")
@@ -31,30 +35,25 @@ fun AppNavGraph(
             SplashScreen(navController)
         }
 
-        composable(Screen.Login.route) {
-            LoginScreen(
-                onLoginSuccess = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Login.route) { inclusive = true }
-                    }
-                }
+        composable(Screen.SignIn.route) {
+            GoogleSignInScreen(
+                navController = navController
             )
         }
-
 
         composable(Screen.Home.route) {
             HomeScreen(
-                onAddPerson = { navController.navigate(Screen.Person.route) },
-                onSummary = { navController.navigate(Screen.Summary.route) },
-                onTransaction = { navController.navigate(Screen.Transaction.route) }
+                navController = navController
             )
         }
 
-//        composable(Screen.Person.route) {
-//            AddPersonScreen(
-//                onBack = { navController.popBackStack() }
-//            )
-//        }
+        composable(Screen.Person.route) {
+            AddPersonScreen(
+                onBack = { navController.popBackStack() },
+                navController = navController,
+                viewModel = HomeViewModel(MainRepository())
+            )
+        }
 //
 //        composable(Screen.Summary.route) {
 //            SummaryScreen(

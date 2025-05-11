@@ -1,59 +1,47 @@
 package com.nxxr.myudhaar.data.repository
 
-import android.content.Context
-import android.content.Intent
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
+import android.util.Log
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
-import com.nxxr.myudhaar.R
+import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 
-class AuthRepository(context: Context) {
-
+/**
+ * Repository handling authentication operations with FirebaseAuth.
+ */
+class AuthRepository {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val oneTapClient: SignInClient = Identity.getSignInClient(context)
+    private val firestore = FirebaseFirestore.getInstance()
 
-    private val signInRequest: BeginSignInRequest = BeginSignInRequest.builder()
-        .setGoogleIdTokenRequestOptions(
-            BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                .setSupported(true)
-                .setServerClientId(R.string.web_client_id.toString())
-                .setFilterByAuthorizedAccounts(false)
-                .build()
-        )
-        .setAutoSelectEnabled(true)
-        .build()
-
-    val currentUser: FirebaseUser?
-        get() = auth.currentUser
-
-    suspend fun beginSignIn(): Intent? {
-        return try {
-            val result = oneTapClient.beginSignIn(signInRequest).await()
-            result.pendingIntent.intentSender?.let { sender ->
-                Intent().putExtra("INTENT_SENDER", sender)
+    fun ensureUserDocumentExists(userId: String) {
+        val userRef = firestore.collection("users").document(userId)
+        userRef.get().addOnSuccessListener { document ->
+            if (!document.exists()) {
+                val newUser = hashMapOf(
+                    "createdAt" to FieldValue.serverTimestamp()
+                )
+                userRef.set(newUser)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
+        }.addOnFailureListener {
+            Log.e("Firestore", "Failed to check or create user document", it)
         }
     }
 
-    suspend fun signInWithGoogle(idToken: String): FirebaseUser? {
-        return try {
-            val credential = GoogleAuthProvider.getCredential(idToken, null)
-            auth.signInWithCredential(credential).await().user
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
+    suspend fun signInWithCredential(credential: AuthCredential): Result<Unit> = try {
+
+
+        auth.signInWithCredential(credential).await()
+        Result.success(Unit)
+    } catch (e: Exception) {
+        Log.e("AuthRepo", "Exception during sign-in", e)
+        Result.failure(e)
     }
 
-    fun signOut() {
+    fun logout() {
         auth.signOut()
-        oneTapClient.signOut()
     }
+
+    fun currentUserId(): String? = auth.currentUser?.uid
 }
