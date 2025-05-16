@@ -1,8 +1,5 @@
 package com.nxxr.myudhaar.ui.screens
 
-import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -211,47 +207,23 @@ fun TransactionRow(
 
 
 @Composable
-fun HomeButton(
-    text: String,
-    iconId: Int,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-) {
-    // Animate the FAB’s scale when it enters the composition
-    val scale by animateFloatAsState(
-        targetValue = 1f,
-        animationSpec = tween(durationMillis = 300, easing = FastOutSlowInEasing)
-    )
-
-    FloatingActionButton(
+fun HomeButton(text: String, iconId: Int, modifier: Modifier = Modifier, onClick: () -> Unit) {
+    Button(
         onClick = onClick,
-        containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.onPrimary,
-        modifier = modifier
-            .size(56.dp)
-            .graphicsLayer {
-                scaleX = scale
-                scaleY = scale
-            }
+        shape = RoundedCornerShape(20.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+        modifier = modifier.height(56.dp),
+        elevation = ButtonDefaults.buttonElevation(8.dp)
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
-            Icon(
-                painter = painterResource(iconId),
-                contentDescription = null,
-                modifier = Modifier.size(20.dp)
-            )
-            Spacer(Modifier.width(4.dp))
-            Text(
-                text,
-                style = MaterialTheme.typography.labelLarge
-            )
-        }
+        Icon(
+            painter = painterResource(iconId),
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.onPrimary
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(text, color = MaterialTheme.colorScheme.onPrimary)
     }
 }
-
 
 
 @Composable
